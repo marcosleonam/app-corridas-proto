@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<meta name="description" content="Comparativo: Onde vs CodeCanyon vs App do zero — custo em R$ e prazo, app de corridas MA.">
+<title>Comparativo — App de Corridas MA</title>
+<style>
+  :root{
+    --bg:#f4f2ec; --ink:#16181d; --muted:#5c6069; --card:#ffffff; --line:#e5e2d9;
+    --amber:#F5A623; --amber-soft:#fbf3e2; --green:#0FA47A; --green-soft:#e6f6f0;
+    --red:#E5484D; --red-soft:#fdecec; --nav:#16181d;
+    --shadow:0 24px 60px -28px rgba(20,22,29,.5);
+    --best:#F5A623;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0d1015; --ink:#f2f0e9; --muted:#9aa0ab; --card:#171a21; --line:#262b34;
+      --amber-soft:#2a2213; --green-soft:#122a22; --red-soft:#2c1618; --nav:#0a0c10;
+      --shadow:0 24px 60px -28px rgba(0,0,0,.7); }
+  }
+  :root[data-theme="light"]{ --bg:#f4f2ec; --ink:#16181d; --muted:#5c6069; --card:#fff; --line:#e5e2d9;
+    --amber-soft:#fbf3e2; --green-soft:#e6f6f0; --red-soft:#fdecec; --nav:#16181d; }
+  :root[data-theme="dark"]{ --bg:#0d1015; --ink:#f2f0e9; --muted:#9aa0ab; --card:#171a21; --line:#262b34;
+    --amber-soft:#2a2213; --green-soft:#122a22; --red-soft:#2c1618; --nav:#0a0c10;
+    --shadow:0 24px 60px -28px rgba(0,0,0,.7); }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(22px,5vw,52px) clamp(16px,4vw,32px) 60px}
+
+  header{text-align:center;display:flex;flex-direction:column;gap:11px;align-items:center;margin-bottom:34px}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--amber)}
+  h1{font-size:clamp(27px,5.5vw,44px);font-weight:800;margin:0;letter-spacing:-.025em;text-wrap:balance}
+  .lede{color:var(--muted);font-size:16px;max-width:56ch;text-wrap:balance;margin:0}
+  .assume{font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:6px 14px}
+  .assume b{color:var(--ink)}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+  @media(max-width:820px){ .grid{grid-template-columns:1fr;gap:16px} }
+
+  .col{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;
+    box-shadow:0 2px 10px -6px rgba(0,0,0,.15);display:flex;flex-direction:column}
+  .col.best{border-color:var(--amber);box-shadow:var(--shadow);position:relative}
+  .flag{background:var(--amber);color:#3a2600;font-size:11px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;text-align:center;padding:7px}
+  .col.best .head{padding-top:16px}
+
+  .head{padding:22px 20px 18px;border-bottom:1px solid var(--line)}
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .name{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:4px 0 2px}
+  .tag{color:var(--muted);font-size:13.5px;min-height:38px}
+
+  .price{padding:16px 20px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.015))}
+  .price .lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .price .big{font-size:28px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
+  .price .big small{font-size:14px;font-weight:700;color:var(--muted)}
+  .price .sub{font-size:13px;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+
+  .meta{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .meta div{flex:1;padding:12px 16px}
+  .meta div+div{border-left:1px solid var(--line)}
+  .meta .m-lbl{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .meta .m-val{font-size:15px;font-weight:800;margin-top:3px}
+
+  ul{list-style:none;margin:0;padding:16px 18px;display:flex;flex-direction:column;gap:11px;flex:1}
+  li{display:flex;gap:10px;font-size:13.5px;line-height:1.45}
+  li .i{flex:0 0 20px;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;
+    font-size:12px;font-weight:900;margin-top:1px}
+  .plus .i{background:var(--green-soft);color:var(--green)}
+  .warn .i{background:var(--amber-soft);color:var(--amber)}
+  .bad .i{background:var(--red-soft);color:var(--red)}
+  li b{color:var(--ink)}
+  li span{color:var(--muted)}
+  li span b{font-weight:700}
+
+  .foot{padding:14px 18px 20px;border-top:1px solid var(--line);background:rgba(0,0,0,.012)}
+  .foot .fl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .foot .fv{font-size:13.5px;margin-top:4px;color:var(--ink)}
+
+  /* recommendation strip */
+  .rec{margin-top:30px;background:var(--nav);color:#fff;border-radius:22px;padding:clamp(22px,4vw,32px);
+    display:flex;flex-direction:column;gap:14px}
+  .rec .rk{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+  .rec h2{margin:0;font-size:clamp(19px,3.5vw,26px);font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px}
+  @media(max-width:720px){ .steps{grid-template-columns:1fr} }
+  .step{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:15px}
+  .step .n{width:26px;height:26px;border-radius:8px;background:var(--amber);color:#3a2600;font-weight:800;
+    display:grid;place-items:center;font-size:14px;margin-bottom:9px}
+  .step b{display:block;font-size:14.5px;margin-bottom:3px}
+  .step span{font-size:13px;color:#c3c8d0;line-height:1.45}
+
+  .legal{margin-top:20px;border:1px solid var(--line);background:var(--amber-soft);border-radius:16px;
+    padding:16px 18px;font-size:13.5px;color:var(--ink);display:flex;gap:12px;align-items:flex-start}
+  .legal .warn-i{flex:0 0 26px;width:26px;height:26px;border-radius:8px;background:var(--amber);color:#3a2600;
+    display:grid;place-items:center;font-weight:900}
+  .legal b{font-weight:800}
+  .legal span{color:var(--muted)}
+
+  .disc{margin-top:22px;text-align:center;font-size:12px;color:var(--muted);line-height:1.6;max-width:70ch;margin-inline:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">App de Corridas · Maranhão</div>
+    <h1>Onde × CodeCanyon × App do zero</h1>
+    <p class="lede">Os três caminhos pra colocar o nosso app na rua, com custo em reais e prazo real de cada um. Do mais rápido/pronto ao mais caro/sob medida.</p>
+    <div class="assume">Valores em R$ · dólar considerado <b>~R$ 5,50</b> · estimativas de mercado (2026)</div>
+  </header>
+
+  <div class="grid">
+
+    <!-- ONDE -->
+    <div class="col best">
+      <div class="flag">✦ Melhor pra começar rápido</div>
+      <div class="head">
+        <div class="kicker">Pronto e gerenciado</div>
+        <div class="name">Onde (white-label)</div>
+        <div class="tag">Eles entregam app do passageiro + motorista + painel, com a sua marca nas lojas.</div>
+      </div>
+      <div class="price">
+        <div class="lbl">Investimento inicial</div>
+        <div class="big">~R$ 25.000 <small>(plano inicial)</small></div>
+        <div class="sub">planos maiores: R$ 47 mil / R$ 127 mil</div>
+      </div>
+      <div class="meta">
+        <div><div class="m-lbl">Mensal</div><div class="m-val">~R$ 545 + %</div></div>
+        <div><div class="m-lbl">No ar em</div><div class="m-val">2–6 semanas</div></div>
+      </div>
+      <ul>
+        <li class="plus"><span class="i">✓</span><span><b>Zero programação</b> — pronto pra usar, suporte e atualização inclusos.</span></li>
+        <li class="plus"><span class="i">✓</span><span>Escala de sobra: milhões de corridas, sem cobrar por motorista extra.</span></li>
+        <li class="warn"><span class="i">!</span><span>Você <b>não fica dono do código</b> (é licença/assinatura).</span></li>
+        <li class="warn"><span class="i">!</span><span>Precisa <b>integrar o PIX</b> (gateway brasileiro) — custo à parte.</span></li>
+        <li class="warn"><span class="i">!</span><span>Paga <b>% sobre cada corrida</b> pra eles (negociado por região).</span></li>
+      </ul>
+      <div class="foot">
+        <div class="fl">Ainda mais barato pra validar</div>
+        <div class="fv"><b>Onde.Light</b> = R$ 0 de entrada · ou nacionais: <b>Mestre dos Apps</b> R$ 5.990 único (PIX pronto), <b>Machine</b> R$ 999–2.500 + R$ 199/mês.</div>
+      </div>
+    </div>
+
+    <!-- CODECANYON -->
+    <div class="col">
+      <div class="head">
+        <div class="kicker">Comprar o código</div>
+        <div class="name">CodeCanyon</div>
+        <div class="tag">Você compra um "clone de Uber" pronto, põe sua marca e sobe — mas precisa de um dev.</div>
+      </div>
+      <div class="price">
+        <div class="lbl">Investimento inicial</div>
+        <div class="big">~R$ 5.000–20.000</div>
+        <div class="sub">script R$ 300–8.000 + dev p/ instalar e publicar</div>
+      </div>
+      <div class="meta">
+        <div><div class="m-lbl">Mensal</div><div class="m-val">R$ 300–800</div></div>
+        <div><div class="m-lbl">No ar em</div><div class="m-val">3–6 semanas</div></div>
+      </div>
+      <ul>
+        <li class="plus"><span class="i">✓</span><span><b>Você fica com o código-fonte</b> (posse, ao contrário do Onde).</span></li>
+        <li class="plus"><span class="i">✓</span><span>Barato pra entrar se você já tem um dev de confiança.</span></li>
+        <li class="bad"><span class="i">×</span><span>Sem dev, <b>não sai do lugar</b>: instalar, integrar PIX e publicar exige mão técnica.</span></li>
+        <li class="warn"><span class="i">!</span><span>Código genérico e suporte limitado; precisa <b>"re-skin"</b> ou a loja rejeita.</span></li>
+        <li class="warn"><span class="i">!</span><span>Os "48h" do anúncio viram semanas com customização real.</span></li>
+      </ul>
+      <div class="foot">
+        <div class="fl">Custo escondido</div>
+        <div class="fv">O barato é o arquivo. O caro é <b>instalar, manter, atualizar e publicar</b> nas lojas — some sempre esse dev no orçamento.</div>
+      </div>
+    </div>
+
+    <!-- DO ZERO -->
+    <div class="col">
+      <div class="head">
+        <div class="kicker">Construir do nosso jeito</div>
+        <div class="name">App do zero</div>
+        <div class="tag">Desenvolvimento sob medida: passageiro, motorista, backend em tempo real e painel admin.</div>
+      </div>
+      <div class="price">
+        <div class="lbl">Investimento inicial</div>
+        <div class="big">R$ 100 mil–400 mil</div>
+        <div class="sub">MVP multiplataforma (equipe/agência de dev)</div>
+      </div>
+      <div class="meta">
+        <div><div class="m-lbl">Mensal</div><div class="m-val">R$ 270–810</div></div>
+        <div><div class="m-lbl">No ar em</div><div class="m-val">3–5 meses</div></div>
+      </div>
+      <ul>
+        <li class="plus"><span class="i">✓</span><span><b>100% seu</b> — controle total, PIX nativo, diferencial que ninguém copia.</span></li>
+        <li class="plus"><span class="i">✓</span><span>Custo por corrida baixíssimo: <b>~R$ 0,35–0,50</b> (mapa quase grátis até ~3 mil corridas/mês).</span></li>
+        <li class="bad"><span class="i">×</span><span><b>Caixa e tempo altos</b> antes do primeiro real entrar.</span></li>
+        <li class="warn"><span class="i">!</span><span>Manutenção contínua: <b>10–20% ao ano</b> do custo de desenvolvimento.</span></li>
+        <li class="warn"><span class="i">!</span><span>Só se justifica <b>depois que o mercado já estiver validado</b>.</span></li>
+      </ul>
+      <div class="foot">
+        <div class="fl">Margem</div>
+        <div class="fv">Custo ~R$ 0,50/corrida contra ~R$ 3 de receita (15% de R$ 20). Dá pra cobrar 10–15% e ainda lucrar — Uber/99 cobram 25–30%.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RECOMMENDATION -->
+  <div class="rec">
+    <div class="rk">Minha recomendação</div>
+    <h2>Valide barato primeiro. Só construa do zero quando o volume pagar a conta.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <b>Começa white-label</b>
+        <span>Onde.Light ou Mestre dos Apps (R$ 5.990). No ar em semanas, caixa baixo, sua marca.</span>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <b>Recruta motorista antes</b>
+        <span>Comissão de 10–15% (Uber/99 tiram 25–30%) + saque rápido no PIX pra atrair frota.</span>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <b>Migra pro app do zero</b>
+        <span>Quando o volume de corridas justificar, aí sim investe no app próprio e no diferencial.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGAL -->
+  <div class="legal">
+    <div class="warn-i">§</div>
+    <div>
+      <b>Vale pros três caminhos:</b> tecnologia não resolve a parte legal.
+      <span>Em São Luís é obrigatório credenciar a empresa como <b>OTTC na SMTT</b> (CNPJ + sede na cidade, ISS, R$ 0,10/km) e os motoristas precisam de CNH-EAR, antecedentes, seguros e vistoria anual. <b>Passo nº 1 real: protocolar na SMTT</b> antes de investir no app.</span>
+    </div>
+  </div>
+
+  <p class="disc">Valores são estimativas de mercado pra orientar a decisão — não são orçamentos fechados. Onde e CodeCanyon cotam em dólar e por região; o app do zero varia conforme a agência/escopo. Peça-me os orçamentos fechados quando quiser fechar um caminho.</p>
+</div>
+</body>
+</html>
