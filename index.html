@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<meta name="description" content="Prototipo clicavel do app de corridas para cidades do Maranhao.">
+<title>Protótipo — App de Corridas MA</title>
+<style>
+  :root{
+    --bg:#f4f2 ec; --bg:#f4f2ec; --ink:#16181d; --muted:#5c6069;
+    --card:#ffffff; --line:#e4e1d8;
+    --amber:#F5A623; --green:#0FA47A; --nav:#16181d;
+    --map:#e9ede9; --map-road:#ffffff; --map-block:#dfe5df;
+    --accent:var(--amber);
+    --shadow:0 20px 60px -20px rgba(20,22,29,.45);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0e1116; --ink:#f3f1ea; --muted:#9aa0ab; --line:#242832; }
+  }
+  :root[data-theme="light"]{ --bg:#f4f2ec; --ink:#16181d; --muted:#5c6069; --line:#e4e1d8; }
+  :root[data-theme="dark"]{ --bg:#0e1116; --ink:#f3f1ea; --muted:#9aa0ab; --line:#242832; }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.5;
+    display:flex;flex-direction:column;align-items:center;
+    padding:clamp(20px,5vw,56px) 16px;gap:28px;min-height:100vh}
+
+  .page-head{max-width:520px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;
+    color:var(--amber)}
+  h1{font-size:clamp(26px,6vw,38px);font-weight:800;margin:0;letter-spacing:-.02em;text-wrap:balance}
+  .sub{color:var(--muted);font-size:15px;max-width:44ch;text-wrap:balance}
+  .tag{display:inline-flex;gap:7px;align-items:center;font-size:12px;font-weight:600;
+    color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 12px}
+  .tag b{color:var(--ink)}
+
+  /* toggle */
+  .switch{display:inline-flex;background:var(--card);border:1px solid var(--line);
+    border-radius:100px;padding:4px;gap:4px;box-shadow:0 4px 16px -8px rgba(0,0,0,.2)}
+  .switch button{border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;
+    font-size:14px;padding:9px 20px;border-radius:100px;cursor:pointer;transition:.2s}
+  .switch button.on{background:var(--nav);color:#fff}
+  :root[data-theme="dark"] .switch button.on,
+  @media (prefers-color-scheme:dark){}
+
+  /* phone */
+  .phone{width:344px;max-width:94vw;height:720px;background:#fff;border-radius:44px;
+    box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);position:relative;overflow:hidden;
+    display:flex;flex-direction:column}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:26px;
+    background:#16181d;border-radius:0 0 18px 18px;z-index:40}
+  .status{height:44px;flex:0 0 44px;display:flex;justify-content:space-between;align-items:center;
+    padding:0 22px;font-size:13px;font-weight:700;color:#16181d;z-index:30;position:relative}
+  .status .dots{display:flex;gap:4px;align-items:center;font-size:12px}
+
+  .screen{flex:1;position:relative;overflow:hidden;background:var(--map)}
+
+  /* map */
+  .map{position:absolute;inset:0}
+  .route{stroke:var(--amber);stroke-width:5;fill:none;stroke-linecap:round;
+    stroke-dasharray:6 0;filter:drop-shadow(0 2px 3px rgba(245,166,35,.4))}
+  .pin{transform-origin:center;transition:.4s}
+  .car-dot{transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+
+  /* sheet */
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:26px 26px 0 0;
+    padding:18px 20px 26px;box-shadow:0 -12px 40px -18px rgba(0,0,0,.28);z-index:20;
+    transition:transform .45s cubic-bezier(.4,0,.2,1)}
+  .grab{width:38px;height:5px;border-radius:5px;background:#e0ddd4;margin:0 auto 14px}
+  .sheet h2{margin:0 0 3px;font-size:19px;font-weight:800;letter-spacing:-.01em;color:#16181d}
+  .sheet p.h-sub{margin:0 0 16px;color:#6b6f78;font-size:13px}
+
+  .searchbar{display:flex;align-items:center;gap:11px;background:#f3f1ea;border-radius:14px;
+    padding:14px 15px;font-size:15px;color:#16181d;font-weight:600;cursor:pointer;border:1px solid #ebe8df}
+  .searchbar .ic{width:22px;height:22px;color:var(--amber);flex:0 0 22px}
+
+  .quick{display:flex;gap:9px;margin-top:13px}
+  .chip{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #ebe8df;
+    border-radius:13px;padding:11px 12px;font-size:13px;font-weight:700;color:#16181d;cursor:pointer}
+  .chip small{display:block;color:#8a8e97;font-weight:500;font-size:11px}
+  .chip .d{width:30px;height:30px;border-radius:9px;background:#faf3e4;display:grid;place-items:center;color:var(--amber);flex:0 0 30px}
+
+  /* ride options */
+  .opt{display:flex;align-items:center;gap:13px;padding:13px 12px;border-radius:15px;cursor:pointer;
+    border:1.5px solid transparent}
+  .opt+.opt{margin-top:4px}
+  .opt.sel{border-color:var(--amber);background:#fffaf0}
+  .opt .veh{width:46px;height:46px;border-radius:12px;background:#f3f1ea;display:grid;place-items:center;flex:0 0 46px;font-size:24px}
+  .opt .info{flex:1;min-width:0}
+  .opt .info b{font-size:15px;color:#16181d;display:flex;gap:7px;align-items:center}
+  .opt .info small{color:#8a8e97;font-size:12px}
+  .opt .price{font-weight:800;font-size:16px;color:#16181d;font-variant-numeric:tabular-nums}
+  .badge{font-size:10px;font-weight:800;letter-spacing:.04em;color:#0FA47A;background:#e6f6f0;padding:2px 7px;border-radius:6px}
+
+  .cta{width:100%;border:0;background:var(--amber);color:#3a2600;font:inherit;font-weight:800;font-size:16px;
+    padding:16px;border-radius:15px;cursor:pointer;margin-top:16px;box-shadow:0 10px 24px -10px rgba(245,166,35,.7);
+    transition:transform .12s,filter .2s}
+  .cta:active{transform:scale(.98)}
+  .cta.ghost{background:#f3f1ea;color:#16181d;box-shadow:none;margin-top:9px}
+  .cta.green{background:var(--green);color:#fff;box-shadow:0 10px 24px -10px rgba(15,164,122,.7)}
+  .cta.red{background:#fff;color:#d24;border:1.5px solid #f2d3d8;box-shadow:none;margin-top:9px}
+
+  /* searching */
+  .searching{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0 4px}
+  .pulse{width:64px;height:64px;border-radius:50%;background:var(--amber);position:relative;display:grid;place-items:center;color:#3a2600;margin-bottom:6px}
+  .pulse::before,.pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--amber);animation:ping 1.8s ease-out infinite}
+  .pulse::after{animation-delay:.9s}
+  @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.1);opacity:0}}
+
+  /* driver card */
+  .drv{display:flex;align-items:center;gap:13px}
+  .drv .ph{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#F5A623,#e07b00);
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:20px;flex:0 0 54px}
+  .drv .n b{font-size:16px;color:#16181d;display:block}
+  .drv .n small{color:#8a8e97;font-size:13px}
+  .drv .rate{margin-left:auto;text-align:right}
+  .drv .rate b{font-size:15px;color:#16181d}
+  .plate{display:inline-block;margin-top:6px;font-weight:800;letter-spacing:.06em;background:#16181d;color:#fff;
+    padding:3px 10px;border-radius:6px;font-size:13px;font-variant-numeric:tabular-nums}
+  .drow{display:flex;gap:9px;margin-top:14px}
+  .drow button{flex:1;border:1px solid #ebe8df;background:#fff;border-radius:13px;padding:12px;font:inherit;
+    font-weight:700;font-size:13px;color:#16181d;cursor:pointer;display:flex;gap:7px;align-items:center;justify-content:center}
+  .eta{position:absolute;top:14px;left:14px;right:14px;background:#16181d;color:#fff;border-radius:14px;
+    padding:12px 16px;display:flex;align-items:center;gap:11px;font-size:14px;z-index:25;box-shadow:0 8px 24px -10px rgba(0,0,0,.5)}
+  .eta b{font-size:16px}
+  .eta .big{margin-left:auto;font-weight:800;font-size:22px;font-variant-numeric:tabular-nums}
+
+  /* driver app */
+  .dhead{padding:16px 20px 8px;background:var(--nav);color:#fff}
+  .online{display:flex;align-items:center;gap:10px}
+  .online .knob{width:52px;height:30px;border-radius:30px;background:#0FA47A;position:relative;flex:0 0 52px;cursor:pointer;transition:.2s}
+  .online .knob i{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+  .online.off .knob{background:#3a3f4a}
+  .online.off .knob i{right:25px}
+  .earn{display:flex;gap:10px;padding:14px 20px;background:var(--nav)}
+  .earn .box{flex:1;background:rgba(255,255,255,.08);border-radius:14px;padding:12px 14px}
+  .earn .box small{color:#9aa0ab;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+  .earn .box b{display:block;font-size:20px;margin-top:3px;font-variant-numeric:tabular-nums}
+  .req{margin:14px;background:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow);border:1px solid #eee;position:absolute;left:0;right:0;bottom:14px;z-index:20}
+  .req .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .req .money{font-size:26px;font-weight:800;color:#0FA47A;font-variant-numeric:tabular-nums}
+  .req .from,.req .to{display:flex;gap:11px;align-items:flex-start;font-size:14px;color:#16181d}
+  .req .from{margin-bottom:9px}
+  .req .dotline{display:flex;flex-direction:column;align-items:center;padding-top:4px}
+  .req .dotline .a{width:9px;height:9px;border-radius:50%;background:var(--green)}
+  .req .dotline .l{width:2px;height:26px;background:#ddd}
+  .req .dotline .b{width:9px;height:9px;border-radius:2px;background:var(--amber)}
+  .req small.lb{color:#8a8e97;font-size:11px;display:block;font-weight:600}
+
+  .note{max-width:520px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
+  .note b{color:var(--ink)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12.5px;color:var(--muted)}
+  .legend span{display:inline-flex;gap:6px;align-items:center}
+  .legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+  .hidden{display:none!important}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="page-head">
+  <div class="eyebrow">Protótipo · Conceito</div>
+  <h1>Nosso app de corridas</h1>
+  <p class="sub">Como seria o app da <b>marca</b> rodando nas cidades do Maranhão. Toque nos botões — é clicável. Nome e cores são placeholders, ajustamos pra sua marca.</p>
+  <div class="tag">📍 <b>Interior do MA</b> · São Luís, Imperatriz, Timon, Caxias, Bacabal</div>
+</header>
+
+<div class="switch" role="tablist">
+  <button id="tabPax" class="on" onclick="setApp('pax')">Passageiro</button>
+  <button id="tabDrv" onclick="setApp('drv')">Motorista</button>
+</div>
+
+<!-- PASSENGER PHONE -->
+<div class="phone" id="paxPhone">
+  <div class="notch"></div>
+  <div class="status"><span>9:41</span><span class="dots">📶 🔋 100%</span></div>
+  <div class="screen">
+    <svg class="map" viewBox="0 0 344 720" preserveAspectRatio="xMidYMid slice">
+      <rect width="344" height="720" fill="#e9ede9"/>
+      <g stroke="#fff" stroke-width="14">
+        <path d="M-20 180 H360"/><path d="M-20 430 H360"/><path d="M-20 610 H360"/>
+        <path d="M70 -20 V740"/><path d="M230 -20 V740"/>
+      </g>
+      <g stroke="#fff" stroke-width="7" opacity=".8">
+        <path d="M-20 300 H360"/><path d="M150 -20 V740"/><path d="M300 -20 V740"/>
+      </g>
+      <g fill="#dfe5df">
+        <rect x="82" y="192" width="56" height="96" rx="4"/><rect x="162" y="192" width="56" height="96" rx="4"/>
+        <rect x="242" y="192" width="60" height="96" rx="4"/><rect x="82" y="312" width="56" height="106" rx="4"/>
+        <rect x="242" y="312" width="60" height="106" rx="4"/><rect x="82" y="442" width="56" height="156" rx="4"/>
+        <rect x="162" y="442" width="56" height="156" rx="4"/>
+      </g>
+      <path id="routeLine" class="route hidden" d="M110 545 C 110 470, 190 470, 190 380 S 250 250, 250 150"/>
+      <g id="carDot" class="car-dot hidden" transform="translate(110,545)">
+        <circle r="11" fill="#16181d"/><circle r="11" fill="none" stroke="#F5A623" stroke-width="3"/>
+        <text x="0" y="4" font-size="11" text-anchor="middle">🚗</text>
+      </g>
+      <g id="destPin" class="pin hidden" transform="translate(250,150)">
+        <path d="M0 0 C-13 -18 -13 -30 0 -30 C13 -30 13 -18 0 0Z" fill="#F5A623"/>
+        <circle cx="0" cy="-19" r="5" fill="#fff"/>
+      </g>
+      <g transform="translate(110,545)">
+        <circle r="9" fill="#0FA47A" opacity=".25"/><circle r="5" fill="#0FA47A" stroke="#fff" stroke-width="2"/>
+      </g>
+    </svg>
+
+    <!-- ETA banner (state: enroute) -->
+    <div class="eta hidden" id="etaBar">
+      <span>🚗</span><div><b>João</b> está a caminho<br><small style="opacity:.7">Onix prata · a 2 quarteirões</small></div>
+      <span class="big">3<small style="font-size:12px">min</small></span>
+    </div>
+
+    <!-- SHEET: swaps by state -->
+    <div class="sheet" id="sheet">
+      <!-- HOME -->
+      <div data-state="home">
+        <div class="grab"></div>
+        <h2>Pra onde vamos, Marcos?</h2>
+        <p class="h-sub">Sábado, 09:41 · São Luís</p>
+        <div class="searchbar" onclick="go('choose')">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          Buscar destino
+        </div>
+        <div class="quick">
+          <div class="chip" onclick="go('choose')"><span class="d">🏠</span><div>Casa<small>Cohama</small></div></div>
+          <div class="chip" onclick="go('choose')"><span class="d">💼</span><div>Trabalho<small>Renascença</small></div></div>
+        </div>
+      </div>
+
+      <!-- CHOOSE VEHICLE -->
+      <div data-state="choose" class="hidden">
+        <div class="grab"></div>
+        <h2>Escolha a corrida</h2>
+        <p class="h-sub">Praia Grande → Shopping da Ilha · 6,4 km</p>
+        <div class="opt sel" onclick="selOpt(this)">
+          <div class="veh">🚗</div>
+          <div class="info"><b>Rota <span class="badge">MAIS BARATO</span></b><small>Chega em 3 min · até 4 pessoas</small></div>
+          <div class="price">R$ 14,90</div>
+        </div>
+        <div class="opt" onclick="selOpt(this)">
+          <div class="veh">🛵</div>
+          <div class="info"><b>Moto</b><small>Chega em 2 min · rápido no trânsito</small></div>
+          <div class="price">R$ 8,50</div>
+        </div>
+        <div class="opt" onclick="selOpt(this)">
+          <div class="veh">🚙</div>
+          <div class="info"><b>Conforto</b><small>Chega em 5 min · carro novo, ar</small></div>
+          <div class="price">R$ 21,00</div>
+        </div>
+        <button class="cta" onclick="go('searching')">Confirmar Rota · R$ 14,90</button>
+        <button class="cta ghost" onclick="go('home')">Voltar</button>
+      </div>
+
+      <!-- SEARCHING -->
+      <div data-state="searching" class="hidden">
+        <div class="grab"></div>
+        <div class="searching">
+          <div class="pulse" style="font-size:26px">🔎</div>
+          <h2>Procurando motorista…</h2>
+          <p class="h-sub">Chamando motoristas perto de você</p>
+        </div>
+        <button class="cta red" onclick="go('choose')">Cancelar</button>
+      </div>
+
+      <!-- DRIVER FOUND / ENROUTE -->
+      <div data-state="enroute" class="hidden">
+        <div class="grab"></div>
+        <div class="drv">
+          <div class="ph">J</div>
+          <div class="n"><b>João Ribeiro</b><small>Chevrolet Onix · Prata</small><br><span class="plate">NKL 4C21</span></div>
+          <div class="rate"><b>⭐ 4,9</b><br><small style="color:#8a8e97">1.240 corridas</small></div>
+        </div>
+        <div class="drow">
+          <button>📞 Ligar</button>
+          <button>💬 Mensagem</button>
+          <button>🛡️ Segurança</button>
+        </div>
+        <button class="cta green" onclick="go('home')" style="margin-top:16px">Corrida a caminho · pagar no Pix ou dinheiro</button>
+        <button class="cta red" onclick="go('home')">Cancelar corrida</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DRIVER PHONE -->
+<div class="phone hidden" id="drvPhone">
+  <div class="notch"></div>
+  <div class="status" style="color:#fff;background:#16181d"><span>9:41</span><span class="dots">📶 🔋 100%</span></div>
+  <div class="dhead">
+    <div class="online" id="onlineRow" onclick="toggleOnline()">
+      <div class="knob"><i></i></div>
+      <div><b style="font-size:15px" id="onlineTxt">Você está online</b><br><small style="color:#9aa0ab;font-size:12px">Recebendo corridas em São Luís</small></div>
+    </div>
+  </div>
+  <div class="earn">
+    <div class="box"><small>Hoje</small><b>R$ 187,40</b></div>
+    <div class="box"><small>Corridas</small><b>12</b></div>
+    <div class="box"><small>Online</small><b>4h 20</b></div>
+  </div>
+  <div class="screen" style="background:var(--map)">
+    <svg class="map" viewBox="0 0 344 620" preserveAspectRatio="xMidYMid slice">
+      <rect width="344" height="620" fill="#e9ede9"/>
+      <g stroke="#fff" stroke-width="14"><path d="M-20 160 H360"/><path d="M-20 400 H360"/><path d="M90 -20 V640"/><path d="M250 -20 V640"/></g>
+      <g fill="#dfe5df"><rect x="100" y="172" width="60" height="106" rx="4"/><rect x="180" y="172" width="60" height="106" rx="4"/><rect x="100" y="292" width="60" height="96" rx="4"/><rect x="180" y="292" width="60" height="96" rx="4"/></g>
+      <g transform="translate(90,300)"><circle r="10" fill="#0FA47A" opacity=".25"/><circle r="5" fill="#0FA47A" stroke="#fff" stroke-width="2"/></g>
+    </svg>
+    <!-- ride request -->
+    <div class="req" id="drvReq">
+      <div class="top">
+        <div><small class="lb">NOVA CORRIDA · ROTA</small><b style="font-size:16px">a 3 min de você</b></div>
+        <div class="money">R$ 14,90</div>
+      </div>
+      <div class="from">
+        <div class="dotline"><span class="a"></span><span class="l"></span><span class="b"></span></div>
+        <div>
+          <small class="lb">EMBARQUE</small>Praia Grande, Centro
+          <div class="to" style="margin-top:9px"><small class="lb">DESTINO</small></div>
+          Shopping da Ilha · 6,4 km
+        </div>
+      </div>
+      <button class="cta green" onclick="acceptRide()">Aceitar corrida</button>
+      <button class="cta ghost" onclick="declineRide()">Recusar</button>
+    </div>
+    <div class="req hidden" id="drvAccepted">
+      <div class="top"><div><small class="lb">A CAMINHO DO PASSAGEIRO</small><b style="font-size:16px">Marcos · ⭐ 4,8</b></div><div class="money" style="font-size:18px">3 min</div></div>
+      <div class="drow"><button>🧭 Navegar</button><button>📞 Ligar</button><button>💬 Chat</button></div>
+      <button class="cta green" style="margin-top:14px" onclick="resetDrv()">Cheguei no embarque</button>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <span><i style="background:#F5A623"></i> Marca / acento</span>
+  <span><i style="background:#0FA47A"></i> Confirmação</span>
+  <span><i style="background:#16181d"></i> Navegação</span>
+</div>
+<p class="note">Este é um <b>protótipo visual</b> — as telas são reais e clicáveis, mas ainda não há backend, pagamento ou GPS de verdade. Serve pra alinhar a experiência antes de decidir entre <b>white-label</b> ou <b>app próprio</b>.</p>
+
+<script>
+  function setApp(w){
+    document.getElementById('paxPhone').classList.toggle('hidden', w!=='pax');
+    document.getElementById('drvPhone').classList.toggle('hidden', w!=='drv');
+    document.getElementById('tabPax').classList.toggle('on', w==='pax');
+    document.getElementById('tabDrv').classList.toggle('on', w==='drv');
+    if(w==='pax') go('home'); else resetDrv();
+  }
+  // passenger state machine
+  function go(state){
+    document.querySelectorAll('#sheet [data-state]').forEach(el=>
+      el.classList.toggle('hidden', el.dataset.state!==state));
+    const route=document.getElementById('routeLine'), car=document.getElementById('carDot'),
+          pin=document.getElementById('destPin'), eta=document.getElementById('etaBar');
+    const showRoute = (state==='enroute');
+    route.classList.toggle('hidden', !showRoute);
+    pin.classList.toggle('hidden', !(state==='choose'||state==='searching'||state==='enroute'));
+    car.classList.toggle('hidden', !showRoute);
+    eta.classList.toggle('hidden', !showRoute);
+    if(state==='searching') setTimeout(()=>{ if(currentState==='searching') go('enroute'); }, 2200);
+    if(showRoute){ setTimeout(()=>{ car.setAttribute('transform','translate(170,320)'); },300); }
+    currentState=state;
+  }
+  let currentState='home';
+  function selOpt(el){
+    el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');
+    const price=el.querySelector('.price').textContent;
+    document.querySelector('[data-state="choose"] .cta').textContent='Confirmar Rota · '+price;
+  }
+  // driver
+  function toggleOnline(){
+    const r=document.getElementById('onlineRow');
+    r.classList.toggle('off');
+    document.getElementById('onlineTxt').textContent=r.classList.contains('off')?'Você está offline':'Você está online';
+  }
+  function acceptRide(){ document.getElementById('drvReq').classList.add('hidden'); document.getElementById('drvAccepted').classList.remove('hidden'); }
+  function declineRide(){ document.getElementById('drvReq').style.opacity=.4; setTimeout(resetDrv,600); }
+  function resetDrv(){
+    const q=document.getElementById('drvReq'); q.classList.remove('hidden'); q.style.opacity=1;
+    document.getElementById('drvAccepted').classList.add('hidden');
+  }
+</script>
+
+</body>
+</html>
